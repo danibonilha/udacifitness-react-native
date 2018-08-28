@@ -6,6 +6,7 @@ import { UdaciSteppers } from './UdaciSteppers';
 import { DateHeader } from './DateHeader';
 import { Ionicons } from '@expo/vector-icons';
 import { TextButton } from './TextButton';
+import { submitEntry, removeEntry } from '../utils/api'
 
 export default class AddEntry extends Component {
 	state = {
@@ -50,7 +51,7 @@ export default class AddEntry extends Component {
 	submit = () => {
 		const key = timeToString();
 		const entry = this.state;
-
+		
 		this.setState(() => ({
 			run: 0,
 			bike: 0,
@@ -58,10 +59,13 @@ export default class AddEntry extends Component {
 			sleep: 0,
 			eat: 0
 		}));
+
+		submitEntry({ key, entry });
 	}
 
 	reset = () => {
 		const key = timeToString();
+		removeEntry(key);
 	}
 
 	render() {
