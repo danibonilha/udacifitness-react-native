@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { TextButton } from './TextButton';
 import { submitEntry, removeEntry } from '../utils/api';
 import { connect } from 'react-redux';
-import { addEntry } from '../actions';
+import { addEntry } from '../store/actions';
 import { purple, white } from '../utils/colors';
 
 const SubmitBtn = ({ onPress }) => (
@@ -27,7 +27,7 @@ class AddEntry extends Component {
 	state = {
 		run: 0,
 		bike: 0,
-		swin: 0,
+		swim: 0,
 		sleep: 0,
 		eat: 0
 	}
