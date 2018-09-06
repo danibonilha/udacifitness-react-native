@@ -79,6 +79,8 @@ class AddEntry extends Component {
 			eat: 0
 		}));
 
+		this.props.navigation.goBack();
+
 		submitEntry({ key, entry });
 	}
 
@@ -88,6 +90,8 @@ class AddEntry extends Component {
 		this.props.dispatch(addEntry({
 			[key]: getDailyReminderValue()
 		}));
+
+		this.props.navigation.goBack();
 
 		removeEntry(key);
 
@@ -196,4 +200,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps)(AddEntry); 
+export default connect(mapStateToProps)(AddEntry);
