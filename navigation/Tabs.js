@@ -7,6 +7,7 @@ import AddEntry from '../components/AddEntry';
 import History from '../components/History';
 import Live from '../components/Live';
 
+/* eslint react/display-name: 0 */
 export const Tabs = createBottomTabNavigator(
 	{
 		History: {

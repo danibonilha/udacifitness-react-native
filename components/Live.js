@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Foundation } from '@expo/vector-icons';
 import { purple, white } from '../utils/colors';
 import { Location, Permissions } from 'expo';
@@ -9,7 +9,8 @@ export default class Live extends Component {
 	state = {
 		coords: null,
 		status: null,
-		direction: ''
+		direction: '',
+		bounceValue: new Animated.Value(1),
 	}
 	componentDidMount() {
 		Permissions.getAsync(Permissions.LOCATION)
@@ -46,6 +47,13 @@ export default class Live extends Component {
 			const newDirection = calculateDirection(coords.heading);
 			const { direction, bounceValue } = this.state;
 
+			if (newDirection !== direction) {
+				Animated.sequence([
+					Animated.timing(bounceValue, { duration: 200, toValue: 1.04 }),
+					Animated.spring(bounceValue, { toValue: 1, friction: 4 })
+				]).start();
+			}
+
 			this.setState(() => ({
 				coords,
 				status: 'granted',
@@ -54,7 +62,7 @@ export default class Live extends Component {
 		});
 	}
 	render() {
-		const { status, coords, direction } = this.state;
+		const { status, coords, direction, bounceValue } = this.state;
 
 		if (status === null) {
 			return <ActivityIndicator style={{ marginTop: 30 }} />;
@@ -66,7 +74,7 @@ export default class Live extends Component {
 					<Foundation name='alert' size={50} />
 					<Text>
 						You denied your location. You can fix this by visiting your settings and enabling location services for this app.
-  				</Text>
+					</Text>
 				</View>
 			);
 		}
@@ -77,11 +85,11 @@ export default class Live extends Component {
 					<Foundation name='alert' size={50} />
 					<Text>
 						You need to enable location services for this app.
-  				</Text>
+					</Text>
 					<TouchableOpacity style={styles.button} onPress={this.askPermission}>
 						<Text style={styles.buttonText}>
 							Enable
-  					</Text>
+						</Text>
 					</TouchableOpacity>
 				</View>
 			);
@@ -91,26 +99,27 @@ export default class Live extends Component {
 			<View style={styles.container}>
 				<View style={styles.directionContainer}>
 					<Text style={styles.header}>You're heading</Text>
-					<Text style={styles.direction}>
+					<Animated.Text
+						style={[styles.direction, { transform: [{ scale: bounceValue }] }]}>
 						{direction}
-					</Text>
+					</Animated.Text>
 				</View>
 				<View style={styles.metricContainer}>
 					<View style={styles.metric}>
 						<Text style={[styles.header, { color: white }]}>
 							Altitude
-  					</Text>
+						</Text>
 						<Text style={[styles.subHeader, { color: white }]}>
 							{Math.round(coords.altitude * 3.2808)} Feet
-  					</Text>
+						</Text>
 					</View>
 					<View style={styles.metric}>
 						<Text style={[styles.header, { color: white }]}>
 							Speed
-  					</Text>
+						</Text>
 						<Text style={[styles.subHeader, { color: white }]}>
 							{(coords.speed * 2.2369).toFixed(1)} MPH
-  					</Text>
+						</Text>
 					</View>
 				</View>
 			</View>
